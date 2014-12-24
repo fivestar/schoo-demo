@@ -9,14 +9,16 @@ class UpdateSqlSample
 
     public function suspendUsers(array $userIds)
     {
-        foreach ($userIds as $userId) {
-            // status 1: active, 2: suspended
-            $sql = "UPDATE user SET status = 2 WHERE id = :userId";
-            $params = [
-                'userId' => $userId,
-            ];
-
-            $this->db->execute($sql, $params);
+        if (count($userIds) < 1) {
+            return;
         }
+
+        $sql = "UPDATE user SET status = :status WHERE id IN (:userIds)";
+        $params = [
+            'userIds' => $userIds,
+            'status'  => User::STATUS_SUSPENDED,
+        ];
+
+        $this->db->execute($sql, $params);
     }
 }
